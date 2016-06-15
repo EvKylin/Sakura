@@ -1,0 +1,129 @@
+.dropdown{
+
+}
+.dropdown-menu{
+  border-color: #e1e5ec;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.15);
+  animation: dropdownSlideInUp .3s;
+
+  &:before,&:after{
+    display: table;
+    content: '';
+    border-style: none solid solid;
+    position: absolute;
+  }
+  &:before{
+    border-color: transparent transparent #ccc;
+    border-width: 10px;
+    top:-10px;
+    left: 9px;
+  }
+  &:after{
+    border-color: transparent transparent #fff;
+    border-width: 9px;
+    top: -9px;
+    left: 10px;
+  }
+}
+
+.pull-right{
+  .dropdown-menu{
+    right: 0;
+    left: auto;
+
+    &:before{
+      left: auto;
+      right: 9px;
+    }
+    &:after{
+      left: auto;
+      right:10px;
+    }
+  }
+}
+
+.dropdowm-extended{
+  .dropdown-menu{
+    max-width: 275px;
+    width: 275px;
+    padding: 0;
+    &:after{
+      border-color: transparent transparent #eaedf2;
+    }
+  }
+}
+.external{
+  background-color: #eaedf2;
+  display: block;
+  overflow: hidden;
+  padding: 15px;
+  >h3,>a{
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0!important;
+  }
+  >h3{
+    float: left;
+  }
+  >a{
+    position: absolute;
+    right: 15px;
+  }
+}
+.dropdown-menu-list{
+  height: 240px;
+  padding: 0;
+  overflow-y: auto;
+}
+
+.dropdown-notification, .dropdown-tasks{
+  .dropdown-menu-list{
+    >li>a{
+      display: block;
+      padding: 15px;
+      font-size: 12px;
+      color: #888;
+    }
+  }
+}
+
+.dropdown-notification{
+  .dropdown-menu-list{
+    .details{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 185px;
+      padding: 4px 0;
+      display: inline-block;
+      .label {
+        display: inline-block;
+        text-align: center;
+        margin-right: 5px;
+        margin-bottom: 0;
+        padding: .3em .6em;
+        width: 26px;
+      }
+    }
+    .time{
+      float: right;
+      background-color: #f2f2f2;
+      padding: 2px 5px;
+    }
+  }
+}
+
+
+ .dropdown-tasks{
+  .dropdown-menu-list{
+    .task{
+      .percent {
+        float: right;
+      }
+    }
+    .progress{
+      margin: 8px 0 2px;
+    }
+  }
+}

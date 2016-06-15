@@ -1,0 +1,12 @@
+.progress{
+  box-shadow:none;
+  .progress-bar{
+    box-shadow: none;
+  }
+}
+
+// Span Progress
+span.progress{
+  height: 8px;
+  display: block;
+}

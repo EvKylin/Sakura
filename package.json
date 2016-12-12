@@ -15,5 +15,19 @@
   "bugs": {
     "url": "https://github.com/EvKylin/Sakura/issues"
   },
-  "homepage": "https://github.com/EvKylin/Sakura#readme"
+  "homepage": "https://github.com/EvKylin/Sakura#readme",
+  "devDependencies": {
+    "autoprefixer": "^6.5.3",
+    "browser-sync": "^2.18.5",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-changed": "^1.3.2",
+    "gulp-clean-css": "^2.2.1",
+    "gulp-postcss": "^6.2.0",
+    "gulp-sass": "^3.0.0",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-watch": "^4.3.11",
+    "node-sass": "^4.0.0",
+    "run-sequence": "^1.2.2"
+  }
 }

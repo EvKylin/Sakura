@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const runSequence = require('run-sequence').use(gulp);
 const browserSync = require('browser-sync').create();
 const changed = require('gulp-changed');
 //const rename = require('gulp-rename');
@@ -24,7 +23,6 @@ const path = {
 }
 
 //
-
 gulp.task('watch', ()=>
   gulp.watch([
     path.app + '/scss/**/*.scss'
@@ -57,4 +55,4 @@ gulp.task('bs', () =>
 // =====================================================================================================================
 
 // Serve
-gulp.task('test', () => runSequence('clean', 'scss'));
+gulp.task('default', gulp.series('clean', gulp.parallel('scss')));

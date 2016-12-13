@@ -15,6 +15,121 @@
 // For each breakpoint, define the maximum width of the container in a media query
 @mixin make-container-max-widths($max-widths: $container-max-widths, $breakpoints: $grid-breakpoints) {
   @each $breakpoint, $container-max-width in $max-widths {
-    //@include
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
+      width: $container-max-width;
+      max-width: 100%;
+    }
   }
+}
+
+@mixin make-gutters($gutters: $grid-gutter-widths) {
+  @each $breakpoint in map-keys($gutters) {
+    @include media-breakpoint-up($breakpoint) {
+      $gutter: map-get($gutters, $breakpoint);
+      padding-right: $gutter / 2;
+      padding-left: $gutter / 2;
+    }
+  }
+}
+
+@mixin make-row($gutters: $grid-gutter-widths) {
+  @include clearfix();
+
+  @each $breakpoint in map-keys($gutters) {
+    @include media-breakpoint-up($breakpoint) {
+      $gutter: map-get($gutters, $breakpoint);
+      margin-right: $gutter / -2;
+      margin-left: $gutter / -2;
+    }
+  }
+}
+
+@mixin make-col-attr($size, $columns: $grid-columns) {
+  width: percentage($size / $columns);
+  float: left;
+}
+
+@mixin make-col-offset($size, $columns: $grid-columns) {
+  margin-left: percentage($size / $columns);
+}
+
+@mixin make-col-push($size, $columns: $grid-columns) {
+  left: if($size > 0, percentage($size / $columns), auto);
+}
+
+@mixin make-col-pull($size, $columns: $grid-columns) {
+  right: if($size > 0, percentage($size / $columns), auto);
+}
+
+@mixin make-col-modifier($type, $size, $columns) {
+  // Work around the lack of dynamic mixin @include support (https://github.com/sass/sass/issues/626)
+  @if $type == push {
+    @include make-col-push($size, $columns);
+  } @else if $type == pull {
+    @include make-col-pull($size, $columns);
+  } @else if $type == offset {
+    @include make-col-offset($size, $columns)
+  }
+}
+
+// Framework grid generation
+//
+// Used only by Sakura to generate the correct number of grid classes given
+// any value of `$grid-columns`.
+
+@mixin make-grid-columns($columns: $grid-columns, $gutters: $grid-gutter-widths, $breakpoints: $grid-breakpoints) {
+  %grid-column {
+    position: relative;
+    // Prevent columns from collapsing when empty
+    min-height: 1px;
+    @include make-gutters($gutters);
+  }
+
+  $breakpoint-counter: 0;
+  @each $breakpoint in map-keys($breakpoints) {
+    $breakpoint-counter: $breakpoint-counter + 1;
+
+    // Allow columns to stretch full width below their breakpoints
+    // Columns size breakpoint (xs sm md lg xl)
+    // .#{$breakpoint} {
+    //   @extend %grid-column;
+    // }
+
+    // @for $i from 1 through $columns {
+    //   .#{$breakpoint}-#{$i} {
+    //     @extend %grid-column;
+    //   }
+    .col {
+      @extend %grid-column;
+    }
+
+
+  @include media-breakpoint-up($breakpoint, $breakpoints) {
+
+    @for $i from 1 through $columns {
+      // Columns size breakpoint (xs sm md lg xl)
+      .#{$breakpoint}-#{$i} {
+        @include make-col-attr($i, $columns);
+      }
+    }
+
+    @each $modifier in (pull, push) {
+      @for $i from 0 through $columns {
+        .#{$modifier}-#{$breakpoint}-#{$i} {
+          @include make-col-modifier($modifier, $i, $columns);
+        }
+      }
+    }
+
+    // `$columns - 1` because offsetting by the width of an entire row isn't possible
+    @for $i from 0 through ($columns - 1) {
+      @if $breakpoint-counter != 1 or $i != 0 { // Avoid emitting useless .offset-xs-0
+        .offset-#{$breakpoint}-#{$i} {
+          @include make-col-modifier(offset, $i, $columns)
+        }
+      }
+    }
+  }
+}
+
 }

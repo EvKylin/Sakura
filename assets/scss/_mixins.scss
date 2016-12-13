@@ -1,2 +1,8 @@
-@import "mixins/clearfix";
+// Utilities
+@import "mixins/breakpoints";
 @import "mixins/text-truncate";
+
+
+// Layout
+@import "mixins/clearfix";
+@import "mixins/grid";

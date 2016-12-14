@@ -9,7 +9,9 @@
   padding-right: ($gutter/2);
 
   // Clear both
-  @include clearfix();
+  @if not $enable-flex {
+    @include clearfix();
+  }
 }
 
 // For each breakpoint, define the maximum width of the container in a media query
@@ -33,7 +35,13 @@
 }
 
 @mixin make-row($gutters: $grid-gutter-widths) {
-  @include clearfix();
+  // If flex enable use flex system else use grid system
+  @if $enable-flex {
+    display: flex;
+    flex-wrap: wrap;
+  } @else {
+    @include clearfix();
+  }
 
   @each $breakpoint in map-keys($gutters) {
     @include media-breakpoint-up($breakpoint) {
@@ -45,8 +53,16 @@
 }
 
 @mixin make-col-attr($size, $columns: $grid-columns) {
-  width: percentage($size / $columns);
-  float: left;
+  @if $enable-flex {
+    flex: 0 0 percentage($size / $columns);
+    // Add a `max-width` to ensure content within each column does not blow out
+    // the width of the column. Applies to IE10+ and Firefox. Chrome and Safari
+    // do not appear to require this.
+    max-width: percentage($size / $columns);
+  } @else {
+    width: percentage($size / $columns);
+    float: left;
+  }
 }
 
 @mixin make-col-offset($size, $columns: $grid-columns) {
@@ -82,6 +98,11 @@
     position: relative;
     // Prevent columns from collapsing when empty
     min-height: 1px;
+
+    @if $enable-flex {
+      width: 100%;
+    }
+
     @include make-gutters($gutters);
   }
 
@@ -103,33 +124,41 @@
       @extend %grid-column;
     }
 
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
 
-  @include media-breakpoint-up($breakpoint, $breakpoints) {
-
-    @for $i from 1 through $columns {
-      // Columns size breakpoint (xs sm md lg xl)
-      .#{$breakpoint}-#{$i} {
-        @include make-col-attr($i, $columns);
-      }
-    }
-
-    @each $modifier in (pull, push) {
-      @for $i from 0 through $columns {
-        .#{$modifier}-#{$breakpoint}-#{$i} {
-          @include make-col-modifier($modifier, $i, $columns);
+      // Provide basic `{bp}` classes for equal-width flexbox columns
+      @if $enable-flex {
+        .#{$breakpoint}{
+          flex-basis: 0;
+          flex-grow: 1;
+          max-width: 100%;
         }
       }
-    }
 
-    // `$columns - 1` because offsetting by the width of an entire row isn't possible
-    @for $i from 0 through ($columns - 1) {
-      @if $breakpoint-counter != 1 or $i != 0 { // Avoid emitting useless .offset-xs-0
-        .offset-#{$breakpoint}-#{$i} {
-          @include make-col-modifier(offset, $i, $columns)
+      @for $i from 1 through $columns {
+        // Columns size breakpoint (xs sm md lg xl)
+        .#{$breakpoint}-#{$i} {
+          @include make-col-attr($i, $columns);
+        }
+      }
+
+      @each $modifier in (pull, push) {
+        @for $i from 0 through $columns {
+          .#{$modifier}-#{$breakpoint}-#{$i} {
+            @include make-col-modifier($modifier, $i, $columns);
+          }
+        }
+      }
+
+      // `$columns - 1` because offsetting by the width of an entire row isn't possible
+      @for $i from 0 through ($columns - 1) {
+        @if $breakpoint-counter != 1 or $i != 0 { // Avoid emitting useless .offset-xs-0
+          .offset-#{$breakpoint}-#{$i} {
+            @include make-col-modifier(offset, $i, $columns)
+          }
         }
       }
     }
   }
-}
 
 }
